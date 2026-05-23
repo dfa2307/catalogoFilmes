@@ -31,3 +31,26 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Java
+*.class
+*.jar
+*.war
+
+# Logs
+*.log
+logs/
+
+# IDEs
+.idea/
+.settings/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Sensíveis
+.env
+.env.*
+application-local.properties
+application-local.yml
