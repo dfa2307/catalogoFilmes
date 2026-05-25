@@ -20,7 +20,7 @@ public class CatalogoFilmesApplication  implements CommandLineRunner{
     public void run(String... args) throws Exception {
         ApiClient apiClient = new ApiClient();
 
-        String url = "http://www.omdbapi.com/?t=dogville&apikey=" + apiKey ;
+        String url = "http://www.omdbapi.com/?t=never+have+i+ever&apikey=" + apiKey ;
 
         System.out.println(apiClient.sendRequest(url));
     }
