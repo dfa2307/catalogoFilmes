@@ -2,12 +2,9 @@ package br.com.catalogoFilmes.catalogoFilmes.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-public record SerieDTO(
+public record EpisodioDTO(
         String title,
-        String year,
-        String genre,
-        @SerializedName("totalSeasons")
-        Integer totalSeasons,
+        Integer episode,
         @SerializedName("imdbRating")
         String imdbRating
 ) {

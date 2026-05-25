@@ -1,7 +1,9 @@
 package br.com.catalogoFilmes.catalogoFilmes;
 
 import br.com.catalogoFilmes.catalogoFilmes.client.ApiClient;
-import org.springframework.beans.factory.annotation.Value;
+import br.com.catalogoFilmes.catalogoFilmes.dto.TemporadaDTO;
+import br.com.catalogoFilmes.catalogoFilmes.services.MediaSearchService;
+import br.com.catalogoFilmes.catalogoFilmes.util.JsonConverter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,20 +11,27 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class CatalogoFilmesApplication  implements CommandLineRunner{
 
-    @Value("${omdb.api.key}")
-    private String apiKey;
+    private final MediaSearchService service;
 
-	public static void main(String[] args) {
+    public CatalogoFilmesApplication(MediaSearchService service) {
+        this.service = service;
+    }
+
+    public static void main(String[] args) {
 		SpringApplication.run(CatalogoFilmesApplication.class, args);
 	}
 
     @Override
     public void run(String... args) throws Exception {
-        ApiClient apiClient = new ApiClient();
+        service.search();
 
-        String url = "http://www.omdbapi.com/?t=never+have+i+ever&apikey=" + apiKey ;
-
-        System.out.println(apiClient.sendRequest(url));
+//        JsonConverter jsonConverter = new JsonConverter();
+//
+//        ApiClient apiClient = new ApiClient();
+//        var json = apiClient.sendRequest("https://www.omdbapi.com/?t=Game%20of%20Thrones&Season=1&apikey=544ecfba");
+//
+//        TemporadaDTO temporadaDTO = jsonConverter.jsonConverter(json, TemporadaDTO.class);
+//        System.out.println(temporadaDTO);
     }
 
 }
