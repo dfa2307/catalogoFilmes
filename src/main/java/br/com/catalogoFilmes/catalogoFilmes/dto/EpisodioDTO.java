@@ -4,8 +4,10 @@ import com.google.gson.annotations.SerializedName;
 
 public record EpisodioDTO(
         String title,
-        Integer episode,
+        String episode,
         @SerializedName("imdbRating")
-        String imdbRating
+        String imdbRating,
+        @SerializedName("Season")
+        String season
 ) {
 }
