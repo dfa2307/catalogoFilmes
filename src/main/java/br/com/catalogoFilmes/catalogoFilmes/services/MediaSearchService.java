@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -97,12 +94,22 @@ public class MediaSearchService {
                                 + " - " + e.getDataLancamento().format(formatter));
                     });
             System.out.println("####################################################################################");
+            System.out.println("BUSCA DE EPISÓDIO: ");
             System.out.println("Digite o nome do episódio");
             String nomeEpisodio = scanner.nextLine();
 
-            listaEpisodios.stream()
-                    .filter(e -> e.getTitulo().equalsIgnoreCase(nomeEpisodio))
-                    .forEach(System.out::println);
+            Optional<Episodio> episodioSearch = listaEpisodios.stream()
+                    .filter(e -> e.getTitulo().toUpperCase().contains(nomeEpisodio.toUpperCase()))
+                    .findFirst();
+
+            if(episodioSearch.isPresent()){
+                System.out.println("Episódio encontrado!");
+                System.out.println("Temporada: " + episodioSearch.get().getNumeroTemporada()
+                + " - Episódio: " + episodioSearch.get().getNumeroEpisodio()
+                + " - " + episodioSearch.get().getTitulo());
+            }else {
+                System.out.println("Episódio não encontrado!");
+            }
 
         }catch (NullPointerException e){
             System.out.println("Nome digitado errado");
