@@ -7,7 +7,6 @@ public record EpisodioDTO(
         String episode,
         @SerializedName("imdbRating")
         String imdbRating,
-        @SerializedName("Season")
-        String season
+        String released
 ) {
 }
