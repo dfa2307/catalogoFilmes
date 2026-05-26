@@ -53,23 +53,27 @@ public class MediaSearchService {
         //Para cada temporada na lista dê um System.out.println = t -> System.out.println(t)
 //        listaTemporadas.forEach(System.out::println);
 
+        //Pra cada temporada imprima o espisódios da temporada
+        listaTemporadas.forEach(t -> {
+            System.out.println("Temporada " + t.season());
 
-//        listaTemporadas.forEach(t -> {
-//            System.out.println("Temporada " + t.season());
-//
-//            t.episodes().forEach(e-> System.out.println("Episódio " + e.episode() + " : " + e.title()));
-//        });
+            t.episodes().forEach(e-> System.out.println("Episódio " + e.episode() + " : " + e.title() + " Lançamento: " + e.released()));
+        });
+
+        System.out.println("####################################################################################");
 
         //Para cada temporada, pega a lista de episodios e adiciona na lista de episodios
         listaTemporadas.forEach(t -> listaEpisodios.addAll(t.episodes()));
 
-        //Stream API para filtrar e ordenar os espisódios  em ordem de avaliação
+        System.out.println("TOP 5 Episódios: ");
+
+        //Stream API para filtrar e ordenar os espisódios  em ordem de avaliação e pegar o TOP 5
         List<String> episodiosFiltrados = listaEpisodios.stream()
-                .filter(e-> !e.imdbRating().equals("N/A"))
-                .sorted(Comparator.comparing(EpisodioDTO::imdbRating).reversed())
-                .limit(5)
-                .map(e -> "Episódio: " + e.title() + " | Nota: " + e.imdbRating())
-                .toList();
+                .filter(e-> !e.imdbRating().equals("N/A")) //Filtra somente os episódios que tem imdbRating diferente de N/A
+                .sorted(Comparator.comparing(EpisodioDTO::imdbRating).reversed()) // Ordena a lista pelo imdb Rating de forma decrescente -> reversed()
+                .limit(5) // limita a lista apenas nos 5 primeiros
+                .map(e -> "Episódio: " + e.title() + " | Nota: " + e.imdbRating())//Pega cada elemento da lista e tranforma em uma String  formatada
+                .toList();//Função terminal manda essa manipulação para a lista episódios filtrados
 
 
         episodiosFiltrados.forEach(System.out::println);
