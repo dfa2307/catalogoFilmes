@@ -96,6 +96,14 @@ public class MediaSearchService {
                                 + " - " + e.getTitulo()
                                 + " - " + e.getDataLancamento().format(formatter));
                     });
+            System.out.println("####################################################################################");
+            System.out.println("Digite o nome do episódio");
+            String nomeEpisodio = scanner.nextLine();
+
+            listaEpisodios.stream()
+                    .filter(e -> e.getTitulo().equalsIgnoreCase(nomeEpisodio))
+                    .forEach(System.out::println);
+
         }catch (NullPointerException e){
             System.out.println("Nome digitado errado");
         }
