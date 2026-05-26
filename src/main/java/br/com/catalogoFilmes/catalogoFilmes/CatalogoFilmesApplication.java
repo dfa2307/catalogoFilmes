@@ -25,14 +25,6 @@ public class CatalogoFilmesApplication  implements CommandLineRunner{
     @Override
     public void run(String... args) throws Exception {
         service.search();
-
-//        JsonConverter jsonConverter = new JsonConverter();
-//
-//        ApiClient apiClient = new ApiClient();
-//        var json = apiClient.sendRequest("https://www.omdbapi.com/?t=game+of+thrones&season=1&episode=1&apikey=544ecfba");
-//
-//        EpisodioDTO episodioDTO = jsonConverter.jsonConverter(json, EpisodioDTO.class);
-//        System.out.println(episodioDTO);
     }
 
 }

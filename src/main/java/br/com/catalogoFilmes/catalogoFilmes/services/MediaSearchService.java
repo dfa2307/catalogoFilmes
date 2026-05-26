@@ -4,10 +4,13 @@ import br.com.catalogoFilmes.catalogoFilmes.client.ApiClient;
 import br.com.catalogoFilmes.catalogoFilmes.dto.EpisodioDTO;
 import br.com.catalogoFilmes.catalogoFilmes.dto.SerieDTO;
 import br.com.catalogoFilmes.catalogoFilmes.dto.TemporadaDTO;
+import br.com.catalogoFilmes.catalogoFilmes.model.Episodio;
 import br.com.catalogoFilmes.catalogoFilmes.util.JsonConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -41,8 +44,6 @@ public class MediaSearchService {
         //Lista de temporadas
         List<TemporadaDTO> listaTemporadas = new ArrayList<>();
 
-        //Lista de episódios
-        List<EpisodioDTO> listaEpisodios = new ArrayList<>();
 
         for(int i = 1; i <= serieDTO.totalSeasons(); i++){
             json = apiClient.sendRequest(ENDERECO + nameSerie.replace(" ", "+") + "&season=" + i + API_KEY);
@@ -50,33 +51,50 @@ public class MediaSearchService {
             listaTemporadas.add(temporadaDTO);
         }
 
-        //Para cada temporada na lista dê um System.out.println = t -> System.out.println(t)
-//        listaTemporadas.forEach(System.out::println);
+        System.out.println("####################################################################################");
 
-        //Pra cada temporada imprima o espisódios da temporada
-        listaTemporadas.forEach(t -> {
-            System.out.println("Temporada " + t.season());
+        //Lista de episódios
+        List<Episodio> listaEpisodios = listaTemporadas.stream()
+                        .flatMap(t -> t.episodes().stream()
+                                .map(e -> new Episodio(Integer.parseInt(t.season()), e)))
+                        .toList();
 
-            t.episodes().forEach(e-> System.out.println("Episódio " + e.episode() + " : " + e.title() + " Lançamento: " + e.released()));
-        });
+        listaEpisodios.forEach(System.out::println);
 
         System.out.println("####################################################################################");
 
-        //Para cada temporada, pega a lista de episodios e adiciona na lista de episodios
-        listaTemporadas.forEach(t -> listaEpisodios.addAll(t.episodes()));
-
         System.out.println("TOP 5 Episódios: ");
 
-        //Stream API para filtrar e ordenar os espisódios  em ordem de avaliação e pegar o TOP 5
-        List<String> episodiosFiltrados = listaEpisodios.stream()
-                .filter(e-> !e.imdbRating().equals("N/A")) //Filtra somente os episódios que tem imdbRating diferente de N/A
-                .sorted(Comparator.comparing(EpisodioDTO::imdbRating).reversed()) // Ordena a lista pelo imdb Rating de forma decrescente -> reversed()
-                .limit(5) // limita a lista apenas nos 5 primeiros
-                .map(e -> "Episódio: " + e.title() + " | Nota: " + e.imdbRating())//Pega cada elemento da lista e tranforma em uma String  formatada
-                .toList();//Função terminal manda essa manipulação para a lista episódios filtrados
+        List<Episodio> listaEpisodiosFiltrados = listaEpisodios.stream()
+                .sorted(Comparator.comparing(Episodio::getAvaliacao).reversed())
+                .limit(5)
+                .toList();
+
+        listaEpisodiosFiltrados.forEach(System.out::println);
+
+        System.out.println("####################################################################################");
+        System.out.println("Pesquise episódios por data de lançamento:");
+
+        System.out.println("Digite a partir do ano que deseja os episódio: ");
+        int ano = scanner.nextInt();
+        scanner.nextLine();
+
+        //Cria uma variável e armazena no ano no formato de data
+        //Para pegar os episodios que tenham lançado a partir do 01/01/ano(que o usuário digitar)
+        LocalDate dataLancamento = LocalDate.of(ano, 1, 1);
+
+        //Formatar data par ao padrão que usamos
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 
-        episodiosFiltrados.forEach(System.out::println);
+        listaEpisodios.stream()
+                .filter(e-> e.getDataLancamento().isAfter(dataLancamento))
+                .forEach(e -> {
+                    System.out.println("Temporada: " + e.getNumeroTemporada()
+                    + " - Episódio: " + e.getNumeroEpisodio()
+                    + " - " + e.getTitulo()
+                    + " - " + e.getDataLancamento().format(formatter));
+                });
     }
 
 }
