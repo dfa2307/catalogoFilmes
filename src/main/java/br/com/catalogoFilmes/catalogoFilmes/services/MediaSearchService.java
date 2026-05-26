@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -110,6 +111,33 @@ public class MediaSearchService {
             }else {
                 System.out.println("Episódio não encontrado!");
             }
+            System.out.println("####################################################################################");
+
+            //Cria um map(key, value) com numero da temporada(key), media das avaliações(value)
+            Map<Integer, Double> avaliacaoTemporadas = listaEpisodios.stream()
+                    .filter(e -> e.getAvaliacao() > 0.0)
+                    .collect(Collectors.groupingBy(Episodio::getNumeroTemporada, Collectors.averagingDouble(Episodio::getAvaliacao)));
+                    //collect retorna para o map a chave pegando o Collectors(Episodio::getNumeroTemporada (CHAVE DO MAP), Collectors.averagingDouble(Episodio::getAvaliacao) (VALOR DO MAP)
+
+            for (int i = 1; i <= serieDTO.totalSeasons(); i++){
+                Double media = avaliacaoTemporadas.get(i);
+
+                System.out.println("Temporada: " + i + " - Avaliação: " + String.format("%.1f", media));
+            }
+
+            System.out.println("####################################################################################");
+
+            //Cria estatísticas, media, maior valor, menos valor, media com base na lista de episódios
+            DoubleSummaryStatistics est = listaEpisodios.stream()
+                    .filter(e -> e.getAvaliacao() > 0.0)
+                    .collect(Collectors.summarizingDouble(Episodio::getAvaliacao));
+
+            Double mediaNotaEpisodio = est.getAverage();
+
+            System.out.println("Episódios avaliados: " + est.getCount());
+            System.out.println("Maior nota de episódio: " + est.getMax());
+            System.out.println("Menor nota de episódio: " + est.getMin());
+            System.out.println("Média das notas: " + String.format("%.1f", mediaNotaEpisodio));
 
         }catch (NullPointerException e){
             System.out.println("Nome digitado errado");
