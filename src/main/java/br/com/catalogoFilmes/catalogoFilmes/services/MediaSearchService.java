@@ -68,7 +68,7 @@ public class MediaSearchService {
                 .filter(e-> !e.imdbRating().equals("N/A"))
                 .sorted(Comparator.comparing(EpisodioDTO::imdbRating).reversed())
                 .limit(5)
-                .map(e -> "Episódio: " + e.title() + " - Temporada: " + e.season() + " | Nota: " + e.imdbRating())
+                .map(e -> "Episódio: " + e.title() + " | Nota: " + e.imdbRating())
                 .toList();
 
 
